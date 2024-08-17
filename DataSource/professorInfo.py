@@ -147,7 +147,7 @@ class FacultyInfo(luigi.Task):
                 # finally:
                     # Close the browser
         professors_df["Research-Interest"] = res_int
-        professors_df["biography"] = bio
+        professors_df["Biography"] = bio
         return professors_df
 
     def requires(self):
