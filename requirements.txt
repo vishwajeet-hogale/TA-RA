@@ -1,0 +1,7 @@
+pandas
+numpy
+luigi
+beautifulsoup4
+selenium
+undetected-chromedriver
+google-generativeai
