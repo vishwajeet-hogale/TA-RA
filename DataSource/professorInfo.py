@@ -16,7 +16,7 @@ with open("metadata.json",'r') as f :
     metadata = json.load(f)
     # print(metadata)
 
-
+genai.configure(api_key=metadata["API_KEY"])
 class FacultyInfo(luigi.Task):
 
     def get_professor_links_for_research_areas(self):
@@ -125,6 +125,7 @@ class FacultyInfo(luigi.Task):
                     wait = WebDriverWait(driver, 60)
                     main_content = wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
                     
+                    
                     # Extract and print all the text from the main content
                     text = main_content.text.split("Khoury Social")[0]
                     text = llm.get_all_info_prof_page(text)
@@ -150,6 +151,42 @@ class FacultyInfo(luigi.Task):
         professors_df["Biography"] = bio
         return professors_df
 
+    def get_lab_link(self,professors_df):
+        # Set up Chrome options
+        options = uc.ChromeOptions()
+        options.add_argument('--headless')  # Run in headless mode
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+
+
+        labs = []
+        # Initialize the Chrome driver
+        with uc.Chrome(options=options) as driver:
+            for i in professors_df["Link"]:
+            # Replace with the actual URL
+
+                try:
+                    # Navigate to the webpage
+                    driver.get(i)
+                    
+                    wait = WebDriverWait(driver, 60)
+                    main_content = wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
+                    # print(main_content.text)
+                    model = genai.GenerativeModel('gemini-1.0-pro-latest')
+                    try:
+                        response = model.generate_content(f"""{main_content.text}
+                                                            In the above text, What is the lab and groups names, it is under Labs and Groups ? Answer in just the names of the labs. Don't include anything else. Just the name. Seperate the labs by adding a # in between them.If no labs/groups found return an empty string
+                                                            """)
+                        print(response.text.lower())
+                        labs.append(response.text)
+                    except:
+                        labs.append("")
+                    
+                    time.sleep(1)
+                # finally:
+                    # Close the browser
+        professors_df["Lab"] = labs
+        return professors_df
     def requires(self):
         return Labs()
 
@@ -160,6 +197,7 @@ class FacultyInfo(luigi.Task):
         df = self.filter_based_location()
         df["mail"] = self.get_email_ids_of_professors(df)
         df = self.get_research_interests_and_other_info(df)
+        df = self.get_lab_link(df)
         df.to_csv(self.output().path,index = False)
         print("Success : Faculty Information")
 
