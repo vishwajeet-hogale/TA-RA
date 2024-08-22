@@ -10,7 +10,7 @@ import os
 from professorInfo import FacultyInfo
 
 
-
+genai.configure(api_key="AIzaSyC5p0A8JzIsVleLBLPxHSxo1ae_ByGS3ho")
 class OngoingResearch(luigi.Task):
 
     def get_ongoing_research_links(self):

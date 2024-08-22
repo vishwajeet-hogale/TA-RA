@@ -18,6 +18,7 @@ class Labs(luigi.Task):
         options.add_argument('--disable-dev-shm-usage')
 
         lab_links = []
+        names = []
         research_areas = [
             "artificial-intelligence",
             "data-science",
@@ -34,20 +35,24 @@ class Labs(luigi.Task):
                     links = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'InfoCard-CTA-Content')))
                     all_links = [link.get_attribute('href') for link in links if link.get_attribute('href')]
                     lab_links.extend(all_links)
-
+                    all_links = [link.text for link in links if link.get_attribute('href')]
+                    names.extend(all_links)
                 except Exception as e:
                     print(f"An error occurred: {e}")
-        return lab_links
+        return lab_links,names
 
     def output(self):
         return luigi.LocalTarget('../Bronze/labs.csv')
 
     def run(self):
-        links = self.get_labs_links()
-        df = pd.DataFrame(links, columns=["Links"])
+        links,names = self.get_labs_links()
+        df = pd.DataFrame({"Link":links,"Name":names})
         df.to_csv(self.output().path, index=False)
         # print(df)
         print("Success : Labs Information")
 
 
+
+if __name__ == "__main__":
+    luigi.build([Labs()])
 
