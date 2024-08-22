@@ -37,7 +37,7 @@ class FacultyInfo(luigi.Task):
                 # try:
                     # Step 2: Navigate to the webpage
                     driver.get(prof_url + i)
-                    print(prof_url + i)
+
 
                     wait = WebDriverWait(driver, 40)
                     parent_divs = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//*[@id="people-page-results"]/div')))
@@ -58,9 +58,11 @@ class FacultyInfo(luigi.Task):
     def filter_based_location(self):
         location = metadata["Khoury College of Computer Science"]["location"]
         professors = self.get_professor_links_for_research_areas()
+        print("Stage 1 : Professors from different Research Areas")
         professors_df = pd.DataFrame(professors, columns=["Research-Area", "Link", "Name", "Designation", "Location", " "])
         professors_df.drop(columns=[" "], inplace=True)
         # Filter for rows where "Location" is "BOSTON"
+        print("Stage 2 : Professors from selected location")
         professors_df = professors_df[professors_df["Location"] == location]
         return professors_df
 
@@ -71,7 +73,7 @@ class FacultyInfo(luigi.Task):
         options.add_argument('--headless')  # Run in headless mode
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-
+        print("Stage 3 : Professor's email IDs")
 
         mails = []
         # Initialize the Chrome driver
@@ -82,7 +84,7 @@ class FacultyInfo(luigi.Task):
                     driver.get(i)
                     wait = WebDriverWait(driver, 60)
                     wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
-                    print(i)
+                    # print(i)
                     # Wait for the main content to load and become visible
                     # wait = WebDriverWait(driver, 70)
                     main_content = wait.until(EC.presence_of_all_elements_located((By.TAG_NAME, 'a')))
@@ -91,7 +93,7 @@ class FacultyInfo(luigi.Task):
                         try :
                             link = i.get_attribute('href')
                             if link.split(":")[0] == "mailto" :
-                                print(link)
+                                # print(link)
                                 mail = link.split(":")[1]
                                 # mails.append(link)
                         except:
@@ -108,7 +110,7 @@ class FacultyInfo(luigi.Task):
         options.add_argument('--headless')  # Run in headless mode
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-
+        print("Stage 4 : Professor's bio'")
 
         bio = []
         res_int = []
@@ -157,7 +159,7 @@ class FacultyInfo(luigi.Task):
         options.add_argument('--headless')  # Run in headless mode
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-
+        print("Stage 1 : Professor's labs and groups")
 
         labs = []
         # Initialize the Chrome driver
@@ -175,7 +177,7 @@ class FacultyInfo(luigi.Task):
                     model = genai.GenerativeModel('gemini-1.0-pro-latest')
                     try:
                         response = model.generate_content(f"""{main_content.text}
-                                                            In the above text, What is the lab and groups names, it is under Labs and Groups ? Answer in just the names of the labs. Don't include anything else. Just the name. Seperate the labs by adding a # in between them.If no labs/groups found return an empty string
+                                                            In the above text, What is the lab and groups names, it is under Labs and Groups ? Answer in just the names of the labs. Don't include anything else. Just the name. Seperate the labs by adding a # in between them.If no labs/groups are found in the context then return an empty string/""
                                                             """)
                         print(response.text.lower())
                         labs.append(response.text)
@@ -183,6 +185,8 @@ class FacultyInfo(luigi.Task):
                         labs.append("")
                     
                     time.sleep(1)
+                except:
+                    pass
                 # finally:
                     # Close the browser
         professors_df["Lab"] = labs
@@ -202,4 +206,5 @@ class FacultyInfo(luigi.Task):
         print("Success : Faculty Information")
 
 
-
+if __name__ == "__main__":
+    luigi.build([FacultyInfo()])
