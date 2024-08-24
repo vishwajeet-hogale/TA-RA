@@ -5,13 +5,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import time
+import json
 import google.generativeai as genai
-import os
+import services.llm as llm
 from DataSource.Bronze.professorInfo import FacultyInfo
 
+with open("./metadata.json",'r') as f : 
+    metadata = json.load(f)
 
 
-genai.configure(api_key="AIzaSyC5p0A8JzIsVleLBLPxHSxo1ae_ByGS3ho")
 class OngoingResearch(luigi.Task):
 
     def get_ongoing_research_links(self):
@@ -20,7 +22,8 @@ class OngoingResearch(luigi.Task):
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         # Set up Chrome options
-        research_proj_url= "https://www.khoury.northeastern.edu/research/research-projects/"
+        # research_proj_url= "https://www.khoury.northeastern.edu/research/research-projects/"
+        research_proj_url = metadata["Khoury College of Computer Science"]["Ongoing_Research"]["Ongoing_Research"]
         research_proj_links = []
         with uc.Chrome(options=options) as driver:
 
