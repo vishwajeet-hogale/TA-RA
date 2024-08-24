@@ -9,6 +9,7 @@ import google.generativeai as genai
 import os
 
 
+
 class Labs(luigi.Task):
 
     def get_labs_links(self):
@@ -42,7 +43,7 @@ class Labs(luigi.Task):
         return lab_links,names
 
     def output(self):
-        return luigi.LocalTarget('../Bronze/labs.csv')
+        return luigi.LocalTarget('./Bronze/labs.csv')
 
     def run(self):
         links,names = self.get_labs_links()
