@@ -1,7 +1,6 @@
 import luigi
-from DataSource.Bronze.pipeline import OngoingResearch as bronze1
-from DataSource.Bronze.pipeline import Labs as bronze
-from DataSource.Silver.pipeline import CleanLab_FacultyInfo as silver
+from DataSource.Bronze.pipeline import tasks as BronzeTasks
+from DataSource.Silver.pipeline import tasks as SilverTasks
 
 if __name__ == "__main__":
-    luigi.build([bronze(),bronze1(),silver()])
+    luigi.build(BronzeTasks + SilverTasks,scheduler_host='localhost', scheduler_port=8082)
