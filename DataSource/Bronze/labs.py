@@ -26,7 +26,7 @@ class Labs(luigi.Task):
         names = []
         research_areas = metadata["Khoury College of Computer Science"]["research_areas"]
         # base_url = "https://www.khoury.northeastern.edu/research_areas/"
-        base_url = metadata["Khoury College of Computer Science"]["labs_info"]["base_url"]
+        base_url = metadata["Khoury College of Computer Science"]["Labs"]["base_url"]
 
         with uc.Chrome(options=options) as driver:
             for area in research_areas:

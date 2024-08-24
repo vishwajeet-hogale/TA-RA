@@ -23,7 +23,7 @@ class OngoingResearch(luigi.Task):
         options.add_argument('--disable-dev-shm-usage')
         # Set up Chrome options
         # research_proj_url= "https://www.khoury.northeastern.edu/research/research-projects/"
-        research_proj_url = metadata["Khoury College of Computer Science"]["Ongoing_Research"]["Ongoing_Research"]
+        research_proj_url = metadata["Khoury College of Computer Science"]["Ongoing_Research"]["research_proj_url"]
         research_proj_links = []
         with uc.Chrome(options=options) as driver:
 
