@@ -16,7 +16,7 @@ with open("./metadata.json",'r') as f :
     metadata = json.load(f)
     # print(metadata)
 
-genai.configure(api_key=metadata["API_KEY"])
+
 
 
 class GetProfessorLinks(luigi.Task):

@@ -1,4 +1,5 @@
 import luigi
+import json
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,8 +8,11 @@ import pandas as pd
 import time
 import google.generativeai as genai
 import os
+import services.llm as llm
 
-
+with open("./metadata.json",'r') as f : 
+    metadata = json.load(f)
+    # print(metadata)
 
 class Labs(luigi.Task):
 
@@ -20,13 +24,9 @@ class Labs(luigi.Task):
 
         lab_links = []
         names = []
-        research_areas = [
-            "artificial-intelligence",
-            "data-science",
-            "machine-learning",
-            "natural-language-processing-and-information-retrieval"
-        ]
-        base_url = "https://www.khoury.northeastern.edu/research_areas/"
+        research_areas = metadata["Khoury College of Computer Science"]["research_areas"]
+        # base_url = "https://www.khoury.northeastern.edu/research_areas/"
+        base_url = metadata["Khoury College of Computer Science"]["labs_info"]["base_url"]
 
         with uc.Chrome(options=options) as driver:
             for area in research_areas:

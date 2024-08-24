@@ -8,6 +8,9 @@
                     "Labs" : {
                         "base_url" : "https://www.khoury.northeastern.edu/research_areas/"
                     },
+                    "Ongoing_Research" : {
+                        "research_proj_url": "https://www.khoury.northeastern.edu/research/research-projects/"
+                    },
                     "location" : "BOSTON"
             },
     "API_KEY" : "AIzaSyC5p0A8JzIsVleLBLPxHSxo1ae_ByGS3ho"
