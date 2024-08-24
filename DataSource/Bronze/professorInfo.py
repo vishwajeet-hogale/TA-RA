@@ -209,7 +209,7 @@ class GetLabLinks(luigi.Task):
         options.add_argument('--headless')  # Run in headless mode
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-        print("Stage 1 : Professor's labs and groups")
+        print("Stage 5 : Professor's labs and groups")
 
         labs = []
         # Initialize the Chrome driver

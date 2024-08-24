@@ -21,7 +21,6 @@ class CleanLab_FacultyInfo(luigi.Task):
                     temp = list(row[cols])  # Create a list of the row's values except 'Lab'
                     temp.append(i.strip().lower())  # Append the cleaned 'Lab' value
                     dataframe.append(temp)  # Append this to the dataframe list
-                    # print(dataframe)
             except:
                 dataframe.append(list(row))
         
