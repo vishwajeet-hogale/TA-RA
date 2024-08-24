@@ -17,8 +17,6 @@ with open("./metadata.json",'r') as f :
     # print(metadata)
 
 
-
-
 class GetProfessorLinks(luigi.Task):
     def output(self):
         return luigi.LocalTarget('./Bronze/professor_links.json')
