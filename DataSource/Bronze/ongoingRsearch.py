@@ -7,7 +7,8 @@ import pandas as pd
 import time
 import google.generativeai as genai
 import os
-from professorInfo import FacultyInfo
+from DataSource.Bronze.professorInfo import FacultyInfo
+
 
 
 genai.configure(api_key="AIzaSyC5p0A8JzIsVleLBLPxHSxo1ae_ByGS3ho")
@@ -98,12 +99,15 @@ class OngoingResearch(luigi.Task):
         return FacultyInfo()
 
     def output(self):
-        return luigi.LocalTarget('../Bronze/ongoingresearch.csv')
+        return luigi.LocalTarget('./Bronze/ongoingresearch.csv')
 
     def run(self):
         df = self.get_research_project_info()
         df.to_csv(self.output().path,index=False)
         
 
+
+if __name__ == "__main__":
+    luigi.build([OngoingResearch()])
 
 

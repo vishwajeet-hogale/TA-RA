@@ -9,18 +9,28 @@ import google.generativeai as genai
 import json
 import services.llm as llm
 import re
-from labs import Labs
+from DataSource.Bronze.labs import Labs
 
 
-with open("metadata.json",'r') as f : 
+with open("./metadata.json",'r') as f : 
     metadata = json.load(f)
     # print(metadata)
 
 genai.configure(api_key=metadata["API_KEY"])
-class FacultyInfo(luigi.Task):
 
+
+class GetProfessorLinks(luigi.Task):
+    def output(self):
+        return luigi.LocalTarget('./Bronze/professor_links.json')
+
+    def run(self):
+        # Place the code for get_professor_links_for_research_areas() here.
+        professors = self.get_professor_links_for_research_areas()
+        with self.output().open('w') as f:
+            json.dump(professors, f)
+    
     def get_professor_links_for_research_areas(self):
-        # Set up Chrome options for Colab
+        # Your existing code from `get_professor_links_for_research_areas`
         options = uc.ChromeOptions()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
@@ -54,20 +64,36 @@ class FacultyInfo(luigi.Task):
                             tmp.extend(j[1].split("\n"))
                             professors.append(tmp)
         return professors
+class FilterProfessorsByLocation(luigi.Task):
+    def requires(self):
+        return GetProfessorLinks()
 
-    def filter_based_location(self):
+    def output(self):
+        return luigi.LocalTarget('./Bronze/professors_filtered.csv')
+
+    def run(self):
+        with self.input().open('r') as f:
+            professors = json.load(f)
+        df = pd.DataFrame(professors, columns=["Research-Area", "Link", "Name", "Designation", "Location", " "])
+        df.drop(columns=[" "], inplace=True)
         location = metadata["Khoury College of Computer Science"]["location"]
-        professors = self.get_professor_links_for_research_areas()
-        print("Stage 1 : Professors from different Research Areas")
-        professors_df = pd.DataFrame(professors, columns=["Research-Area", "Link", "Name", "Designation", "Location", " "])
-        professors_df.drop(columns=[" "], inplace=True)
-        # Filter for rows where "Location" is "BOSTON"
-        print("Stage 2 : Professors from selected location")
-        professors_df = professors_df[professors_df["Location"] == location]
-        return professors_df
+        df = df[df["Location"] == location]
+        df.to_csv(self.output().path, index=False)
 
-    def get_email_ids_of_professors(self,professors_df):
-        
+class GetProfessorEmails(luigi.Task):
+    def requires(self):
+        return FilterProfessorsByLocation()
+
+    def output(self):
+        return luigi.LocalTarget('./Bronze/professors_with_emails.csv')
+
+    def run(self):
+        df = pd.read_csv(self.input().path)
+        df["mail"] = self.get_email_ids_of_professors(df)
+        df.to_csv(self.output().path, index=False)
+
+    def get_email_ids_of_professors(self, professors_df):
+        # Your existing code from `get_email_ids_of_professors`
         # Set up Chrome options
         options = uc.ChromeOptions()
         options.add_argument('--headless')  # Run in headless mode
@@ -103,8 +129,20 @@ class FacultyInfo(luigi.Task):
                 except Exception as e:
                     print(f"An error occurred: {e}")
         return mails
+class GetResearchInterestsAndBio(luigi.Task):
+    def requires(self):
+        return GetProfessorEmails()
 
-    def get_research_interests_and_other_info(self,professors_df):
+    def output(self):
+        return luigi.LocalTarget('./Bronze/professors_with_research_bio.csv')
+
+    def run(self):
+        df = pd.read_csv(self.input().path)
+        df = self.get_research_interests_and_other_info(df)
+        df.to_csv(self.output().path, index=False)
+
+    def get_research_interests_and_other_info(self, professors_df):
+        # Your existing code from `get_research_interests_and_other_info`
         # Set up Chrome options
         options = uc.ChromeOptions()
         options.add_argument('--headless')  # Run in headless mode
@@ -152,14 +190,26 @@ class FacultyInfo(luigi.Task):
         professors_df["Research-Interest"] = res_int
         professors_df["Biography"] = bio
         return professors_df
+class GetLabLinks(luigi.Task):
+    def requires(self):
+        return GetResearchInterestsAndBio()
 
-    def get_lab_link(self,professors_df):
+    def output(self):
+        return luigi.LocalTarget('./Bronze/professors_with_labs.csv')
+
+    def run(self):
+        df = pd.read_csv(self.input().path)
+        df = self.get_lab_link(df)
+        df.to_csv(self.output().path, index=False)
+
+    def get_lab_link(self, professors_df):
+        # Your existing code from `get_lab_link`
         # Set up Chrome options
         options = uc.ChromeOptions()
         options.add_argument('--headless')  # Run in headless mode
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-        print("Stage 1 : Professor's labs and groups")
+        print("Stage 5 : Professor's labs and groups")
 
         labs = []
         # Initialize the Chrome driver
@@ -191,20 +241,17 @@ class FacultyInfo(luigi.Task):
                     # Close the browser
         professors_df["Lab"] = labs
         return professors_df
+class FacultyInfo(luigi.Task):
     def requires(self):
-        return Labs()
+        return GetLabLinks()
 
     def output(self):
-        return luigi.LocalTarget('../Bronze/facultyInfo.csv')
+        return luigi.LocalTarget('./Bronze/facultyInfo.csv')
 
     def run(self):
-        df = self.filter_based_location()
-        df["mail"] = self.get_email_ids_of_professors(df)
-        df = self.get_research_interests_and_other_info(df)
-        df = self.get_lab_link(df)
-        df.to_csv(self.output().path,index = False)
-        print("Success : Faculty Information")
-
-
+        df = pd.read_csv(self.input().path)
+        df.to_csv(self.output().path, index=False)
+        print("Success: Faculty Information")
 if __name__ == "__main__":
     luigi.build([FacultyInfo()])
+
