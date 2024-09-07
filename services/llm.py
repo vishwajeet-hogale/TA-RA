@@ -56,9 +56,9 @@ def generate_mail(df,resume):
 
                                                         """)
             time.sleep(1)
-            print(response_ta)
-            ta.append(response_ta.text)
-            ra.append(response_ra.text)
+            print(response_ta.candidates[0].content.parts[0].text)
+            ta.append(response_ta.candidates[0].content.parts[0].text)
+            ra.append(response_ra.candidates[0].content.parts[0].text)
         except:
             ta.append("")
             ra.append("")
