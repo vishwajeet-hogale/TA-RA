@@ -1,0 +1,56 @@
+Vishwajeet Shivaji Hogale
+ +91-7760175955 # vishwajeethogale307@gmail.com ï LinkedIn § github Ñ portfolio
+Education
+Master of Science in Artificial Intelligence (Specialization : Machine Learning ) Sept. 2024 — Aug. 2026
+Northeastern University, Boston, MA
+Key Course Work :
+• Reinforcement Learning and Sequential Decision-Making, Fundamentals of AI, Adv. Machine Learning, Deep Learning,
+Unsupervised Machine Learning and Data Mining
+Bachelor of Technology in Computer Science ( Specialization : Data Science ) Aug. 2018 — May 2022
+PES University, Bangalore, India ( GPA: 8.73/10.0 )
+Experience
+Mercedes-Benz Research and Development India Aug 2022 – July 2024
+Data Analyst Bangalore, India
+Ticket Intelligence
+• Developed a Python web app employing XGBoost and K Means Clustering ML models to automate ServiceNow
+ticket allocation, achieving a 20% reduction in support costs and faster ticket resolutions.
+• Built a scalable model training pipeline on Azure Databricks, improving ticket allocation accuracy from 81% to 93%
+and automating model deployments to Azure Storage.
+AnalyticsAI
+• Built a web app using Streamlit and Python, integrating Gemini API to enable business users to interact with
+procurement data through conversational queries, and display visualizations and insights.
+Dashboard and Advanced Analytics
+• Developed procurement dashboards using Power BI, adding over 5 new features and resolving 5 bugs
+weekly to continuosly enhance supplier evaluation, inventory alerts, and other essential metrics for seamless
+procurement operations.
+Multilex Technology Oct. 2020 – July 2022
+Software Engineering Intern Bangalore, India
+In-house Platform for worldwide pre-IPO Company updates
+• Developed a React.js & Python based in-house platform automating 80% of manual intervention in IPO
+company identification by scraping over 150 news websites, utilizing BERT´s Q&A capability, and providing
+global updates across all stock exchanges.
+• Developed on-premises BERT Q&A training script in PyTorch, consistently training models with current data for
+accurate company prediction, resulting in a notable enhancement in prediction accuracy from 78% to 90%.
+• Implemented multi-threading in Python to optimize luigi pipelines, reducing execution time from 75 minutes
+to 25 minutes, resulting in a significant 66% improvement in execution time.
+• Engineered a ranking system to rank sections in a pdf to extract financial bonds data using Gemini and improved
+information retrieval by 21%
+Technical Skills
+Machine Learning : Tensorflow, PyTorch, OpenCV, Azure Machine Learning, PySpark, NLP, LLM modelling
+Languages: Python, C, HTML/CSS, JavaScript, SQL, Dart
+Developer Tools: VS Code, Microsoft Azure Cloud, Android Studio
+Technologies/Frameworks: Linux, ReactJS, Flutter, Flask, FastAPI, Hugging Face, Github, MongoDB, Hadoop, Hive,
+Docker, Azure Databricks, Power BI, Gemini, Onnix
+Projects
+Theia - An Image to Speech application for the blind | Python, Flask, Flutter, AWS, Ngrok Jan. 2021 - Jan. 2022
+• Collaborated with a team to develop a mobile app for the visually impaired, leveraging a PyTorch CNN-LSTM model
+for image decoding and a Python Flask backend to convert images into detailed speech in real-time.
+• Built a user-friendly Flutter-based mobile UI for real-time image capture and video streaming, seamlessly integrating
+with the backend for predictive analysis and speech output.
+Item based collaborative filtering | Python, Jupyter Notebook View
+• Developed a recommendation system using movielens dataset that uses item-based collaborative filtering to suggest
+similar movies to users.
+Event Photo Manager with Face Recognition | Python, Flask View
+• Created an event photo management system leveraging ResNet-152 and OpenCV for face recognition and
+extraction, enabling users to efficiently retrieve and download images featuring specific individuals from a large
+collection of event photos.
