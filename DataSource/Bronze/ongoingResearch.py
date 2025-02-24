@@ -25,18 +25,16 @@ class OngoingResearch(luigi.Task):
         # research_proj_url= "https://www.khoury.northeastern.edu/research/research-projects/"
         research_proj_url = metadata["Khoury College of Computer Science"]["Ongoing_Research"]["research_proj_url"]
         research_proj_links = []
+        research_areas = metadata["Khoury College of Computer Science"]["research_areas"]
         with uc.Chrome(options=options) as driver:
-
-            # Replace with the actual URL
-
-
-            # Navigate to the webpage
-            driver.get(research_proj_url)
-            wait = WebDriverWait(driver, 90)
-            main_content = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="maincontent"]/div[3]/div/div[1]/div/div[2]/div/div/div/div/div[7]/div/div/div[2]')))
-            print(main_content)
-            # Extract only links within the main_content div
-            research_proj_links = [a.get_attribute("href") for a in main_content.find_elements(By.TAG_NAME, 'a') if a.get_attribute("href")]
+            for area in research_areas:
+                # Replace with the actual URL
+                # Navigate to the webpage
+                driver.get(research_proj_url + area)
+                wait = WebDriverWait(driver, 90)
+                main_content = wait.until(EC.presence_of_element_located((By.XPATH, '/html/body/main/div/div[6]/div[2]/div')))
+                # Extract only links within the main_content div
+                research_proj_links.extend([a.get_attribute("href") for a in main_content.find_elements(By.TAG_NAME, 'a') if a.get_attribute("href")])
         return research_proj_links
 
     def get_research_project_info(self):
@@ -102,7 +100,7 @@ class OngoingResearch(luigi.Task):
         return FacultyInfo()
 
     def output(self):
-        return luigi.LocalTarget('./Bronze/ongoingresearch.csv')
+        return luigi.LocalTarget('./Bronze/ongoingresearchTest.csv')
 
     def run(self):
         df = self.get_research_project_info()
